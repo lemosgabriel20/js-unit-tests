@@ -69,7 +69,7 @@
 
 // PASSO 3: Crie uma função, separada da função `createMenu()`, que, ao receber uma string como parâmetro, 
 // adiciona essa string ao array de `objetoRetornado.consumption`. Essa nova função será adicionada à chave `order`.
-// 
+/* */
 // DICA PARA DESENVOLVIMENTO: 
 // - Definir a função `createMenu()`
 // - Definir o objeto que a `createMenu()` retorna, mas separadamente 
@@ -92,7 +92,53 @@
 // - fará a soma do preço desses itens;
 // - retornará o valor somado acrescido de 10%.
 // DICA: para isso, você precisará percorrer tanto o objeto da chave `food` quanto o objeto da chave `drink`.
+const addConsumption = (request, x) => {
+  x.push(request);
+};
 
-const createMenu = () => {};
+const addPrices = (items, prices) => {
+  for (let i = 0; i < Object.values(items).length; i += 1) {
+    for (let j = 0; j < Object.values(Object.values(items)[i]).length; j += 1) {
+      const name = Object.keys(Object.values(items)[i])[j];
+      prices[name] = Object.values(Object.values(items)[i])[j];
+    }
+  }
+  return prices;
+};
+
+const checkPrices = (prices, x, sum, i) => {
+  const pricesLength = Object.keys(prices).length; 
+  for (let j = 0; j < pricesLength; j += 1) {
+    if (x[i] === Object.keys(prices)[j]) {
+      sum += prices[x[i]];
+      break;
+    }
+  }
+  return sum;
+};
+
+const addSum = (prices, x, sum) => {
+  const xLength = x.length;
+  for (let i = 0; i < xLength; i += 1) {
+    sum = checkPrices(prices, x, sum, i);
+  }
+  return sum;
+};
+
+const createMenu = (items) => {
+  const x = [];
+  return {
+    fetchMenu: () => items,
+    consumption: x,
+    order: (request) => { addConsumption(request, x); },
+    pay: () => {
+      let sum = 0;
+      let prices = {};
+      prices = addPrices(items, prices);
+      sum = addSum(prices, x, sum);
+      return sum;
+    },
+  };
+};
 
 module.exports = createMenu;
